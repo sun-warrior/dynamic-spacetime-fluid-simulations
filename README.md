@@ -27,7 +27,7 @@ The repository is divided into distinct computational architectures designed to 
 The 3D volumetric model requires no backend compilation. It runs natively inside any modern web browser via WebGL, allowing for real-time manipulation of the Higgs Absorption parameter ($\alpha$) and mass density ($\rho_m$).
 
 * **Quick Start:** Navigate to the `3d-volumetric-model/` folder and open `index.html` directly in any modern browser.
-* **Live Web Deployment:** *(Link forthcoming upon repository deployment)*
+* **Live Web Deployment:** [https://sun-warrior.github.io/dynamic-spacetime-fluid-simulations/3d-volumetric-model/]
 
 ---
 
