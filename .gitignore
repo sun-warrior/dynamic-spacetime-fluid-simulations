@@ -1,0 +1,26 @@
+# Node.js / TypeScript dependencies
+node_modules/
+npm-debug.log
+dist/
+build/
+
+# Python virtual environments and dependencies
+venv/
+env/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local Environment Variables (Crucial for security)
+.env
+.env.local
+
+# Heavy mathematical model weights and checkpoints
+*.h5
+*.hdf5
+*.savedmodel
+.ipynb_checkpoints/
+
+# OS generated files
+.DS_Store
+Thumbs.db

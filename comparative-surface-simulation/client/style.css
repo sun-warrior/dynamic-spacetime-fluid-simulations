@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevents scrollbars */
+  background-color: #000; /* Deep black background for space */
+}
+
+canvas {
+  display: block; /* Removes weird bottom margins on the canvas element */
+}

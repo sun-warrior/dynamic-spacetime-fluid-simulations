@@ -1,0 +1,6 @@
+# Core Tensor Mathematics and Array Processing
+tensorflow>=2.15.0
+numpy>=1.26.0
+
+# High-Performance Engine/Broker Communication
+pyzmq>=25.0.0
