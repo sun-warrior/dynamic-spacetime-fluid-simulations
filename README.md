@@ -71,5 +71,5 @@ Access the local environment interface via your browser at `http://localhost:300
 ## Citation & License
 
 * **License:** This computational suite is released under the **Apache License 2.0**. See the `LICENSE` file for details.
-* **Software DOI:** *(Zenodo archive link pending)*
+* **Software DOI:** [![DOI](https://zenodo.org/badge/1327655726.svg)](https://doi.org/10.5281/zenodo.21851863)
 * **Preprint Manuscript:** *(Preprints.org link pending)*
