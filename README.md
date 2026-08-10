@@ -1,4 +1,4 @@
-# Dynamic Spacetime Fluid Cosmology (DSF Framework)
+<img width="1011" height="92" alt="image" src="https://github.com/user-attachments/assets/c86fc158-483a-4597-b92b-0aa59b6ac429" /># Dynamic Spacetime Fluid Cosmology (DSF Framework)
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -71,4 +71,4 @@ Access the local environment interface via your browser at `http://localhost:300
 
 * **License:** This computational suite is released under the **Apache License 2.0**. See the `LICENSE` file for details.
 * **Software DOI:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21851864.svg)](https://doi.org/10.5281/zenodo.21851864)
-* **Preprint Manuscript:** [DOI: 10.5281/zenodo.21868423](https://doi.org/10.5281/zenodo.21868423)
+* **Preprint Manuscript:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21868423.svg)](https://doi.org/10.5281/zenodo.21868423)
