@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-This repository contains the computational implementations accompanying the formal preprint treatise: **"A Treatise on a Novel Cosmological Model: The Dynamic Spacetime Fluid"**. 
+This repository contains the computational implementations accompanying the formal preprint treatise: **"Dynamic Spacetime Fluid Cosmolgy"**. 
 
 The repository is divided into distinct computational architectures designed to mathematically test and visualize fluid-gravitational duality across quantum, stellar, and galactic scales.
 
