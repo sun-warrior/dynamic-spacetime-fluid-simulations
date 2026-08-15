@@ -11,12 +11,14 @@ The repository is divided into distinct computational architectures designed to 
 ## Repository Structure
 
 ```text
-├── comparative-surface-simulation/ # Full-stack physics and tensor solver
-│   ├── engine/                     # Python core mathematical backend (TensorFlow/NumPy)
-│   ├── broker/                     # TypeScript real-time state management and ZeroMQ pipeline
-│   └── client/                     # Node.js frontend visualization interface
-└── 3d-volumetric-model/            # Hardware-accelerated WebGL visualization
-    └── index.html                  # Self-contained Three.js / GLSL interactive shader environment
+├── comparative-surface-simulation/        # Full-stack physics and tensor solver
+│   ├── engine/                            # Python core mathematical backend (TensorFlow/NumPy)
+│   ├── broker/                            # TypeScript real-time state management and ZeroMQ pipeline
+│   └── client/                            # Node.js frontend visualization interface
+└── 3d-volumetric-model/                   # Hardware-accelerated WebGL visualization
+    └── index.html                         # Self-contained Three.js / GLSL interactive shader environment
+└── Single-Galaxy_Diagnostic_Engine.py     # UGC02885_Galzxy_Curve
+└──Global_SPARC_Database_Validator.py      # Complete DB Plot
 ```
 
 ---
