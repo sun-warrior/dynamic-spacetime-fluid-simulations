@@ -43,32 +43,24 @@ grPlane.position.x = 55;
 scene.add(grPlane);
 
 const socket = io('http://localhost:3000');
-const gui = new GUI({ title: 'Simulation Parameters' });
+const gui = new GUI({ title: 'DSF Simulation Controls' });
 
 const params = {
-    massDensity: 50.0,
-    baseViscosity: 1.0,
-    beta: 0.5,           
-    alphaHiggs: 0.5,     
+    massIndex: 50.0,
     showDSF: true,
     showGR: true
 };
 
 const sendParamsToBackend = () => {
     socket.emit('update_params', {
-        mass_density: params.massDensity,
-        base_viscosity: params.baseViscosity,
-        beta: params.beta,
-        alpha_higgs: params.alphaHiggs
+        mass_index: params.massIndex
     });
 };
 
-gui.add(params, 'massDensity', 1, 100).name('Mass Density (ρm)').onFinishChange(sendParamsToBackend);
-gui.add(params, 'baseViscosity', 0.1, 5.0).name('Base Viscosity (μ₀)').onFinishChange(sendParamsToBackend);
-gui.add(params, 'beta', 0.01, 2.0).name('Fluid Coupling (β)').onFinishChange(sendParamsToBackend);
-gui.add(params, 'alphaHiggs', 0.01, 2.0).name('Higgs Absorption (α)').onFinishChange(sendParamsToBackend);
+// Stripped of arbitrary parameters. Only Mass Index remains.
+gui.add(params, 'massIndex', 1, 150).name('Logarithmic Mass Index').onFinishChange(sendParamsToBackend);
 gui.add(params, 'showDSF').name('Toggle DSF Model').onChange((val) => dsfPlane.visible = val);
-gui.add(params, 'showGR').name('Toggle GR Model').onChange((val) => grPlane.visible = val);
+gui.add(params, 'showGR').name('Toggle GR Benchmark').onChange((val) => grPlane.visible = val);
 
 socket.on('connect', () => {
     sendParamsToBackend();
@@ -105,6 +97,7 @@ socket.on('tensor_stream', (data) => {
             <h3 style="margin-top:0; border-bottom: 1px solid #444; padding-bottom: 5px;">Spacetime Geometry Metrics</h3>
             <p><span style="color:#ff3333;">■</span> <b>GR Max Curvature (Depth):</b> ${minGrZ.toFixed(4)} units</p>
             <p><span style="color:#00ffcc;">■</span> <b>DSF Max Curvature (Depth):</b> ${minDsfZ.toFixed(4)} units</p>
+            <p><b>Core Viscosity Collapse (μ_core):</b> ${data.mu_core ? data.mu_core.toFixed(4) : 'N/A'}</p>
             <p><b>Schwarzschild Radius (r_s):</b> ${data.rs ? data.rs.toExponential(4) : 'N/A'}</p>
         `;
         
