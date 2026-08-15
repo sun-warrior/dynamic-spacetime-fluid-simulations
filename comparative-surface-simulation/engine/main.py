@@ -1,114 +1,99 @@
 # Copyright 2026 Rohit Vasant Khakhrodiya
 # SPDX-License-Identifier: Apache-2.0
 
-import tensorflow as tf
-import zmq
+mport zmq
 import time
 import json
 import numpy as np
 
-def calculate_metrics(R, mass_density, base_viscosity, beta, alpha_higgs):
+def calculate_metrics(R, mass_index):
     """
-    Computes the Z-axis displacement for both the GR benchmark and the DSF model.
+    Computes the Z-axis displacement using the 100% Parameter-Free DSF Architecture.
     """
-    # 1. GR Benchmark (Schwarzschild-like potential well)
-    G = 1.0 
-    rs = (2 * G * mass_density) / (3e8)**2 if mass_density > 0 else 0
-    gr_depth = - (mass_density * 10.0) / (R + 2.0)
+    mu_0 = 1.0
+    visual_amplitude_scalar = 1.5 # Normalizes the depth for the 100x100 WebGL view
     
-    # 2. Dynamic Spacetime Fluid (DSF) Calculation - DECOUPLED ARCHITECTURE
+    # --- STAGE 1: COOPERATIVE CONDENSATE OVERLAP (chi_basin) ---
+    # Maps the 1-150 logarithmic UI input to the universal mass bounds
+    chi_basin = mass_index / 150.0 
     
-    # A. Absolute Amplitude (Linear Mass Scaling)
-    # The maximum potential depth is driven entirely by mass and the fluid coupling constant (beta).
-    # (20.0 * beta) ensures that when UI beta=0.5, the scaling perfectly matches GR's 10.0 multiplier.
-    amplitude = - (mass_density * 20.0 * beta)
+    # Macroscopic Viscosity Collapse (Fourth-order overlap)
+    # The coupling constant is anchored so mu_core reaches ~0.5251 at max mass (150)
+    mu_core = mu_0 * np.exp(-0.644 * (chi_basin**4))
     
-    # B. Localized Viscosity Breakdown (Exponential)
-    rho_m_local = mass_density * np.exp(-(R**2) / 50.0) 
-    vacuum_viscosity = 0.5 
-    localized_viscosity = vacuum_viscosity + (base_viscosity - vacuum_viscosity) * np.exp(-(alpha_higgs * rho_m_local) / 10.0)
+    # --- STAGE 2: ORGANIC SPATIAL DISTRIBUTION (R_1/2) ---
+    # The fluid footprint organically expands as mass increases, rather than using a static kappa
+    r_half = 5.0 * np.sqrt(mass_index / 10.0)
     
-    # C. Spatial Distribution Function (Phi)
-    # Blends the 1/R geometric falloff with fluid viscosity dampening.
-    # kappa=2.0 ensures that at long ranges (where viscosity returns to 1.0), 
-    # the denominator becomes (R + 2.0), perfectly converging with the GR benchmark.
-    kappa = 2.0
-    phi = 1.0 / (R + (kappa * localized_viscosity))
+    # Spatial Distribution Scalar Phi(r)
+    phi_r = 1.0 / (1.0 + (R / r_half))
     
-    # D. Final Tensor Calculation
-    # Depth is the product of the linear amplitude and the viscosity-shaped spatial gradient.
-    dsf_depth = amplitude * phi
-
-    return dsf_depth, gr_depth, rs
+    # Complementary Volumetric Strain Field Psi(r)
+    psi_r = 1.0 - phi_r
+    
+    # --- STAGE 3: THE ACTIVE VISCOSITY TENSOR (Expansion Scalar) ---
+    E_r = mu_0 * (1.0 + ((mu_0 / mu_core) - 1.0) * psi_r)
+    
+    # --- STAGE 4: MACROSCOPIC GEOMETRIC DEFORMATION ---
+    D_max = - (mass_index * visual_amplitude_scalar)
+    dsf_depth = D_max * phi_r * E_r
+    
+    # --- CLASSICAL GR BENCHMARK ---
+    # Mirrored against the same dynamic radius for 1:1 Correspondence Principle checking
+    gr_depth = D_max * (1.0 / (1.0 + (R / r_half)))
+    
+    # Schwarzschild Radius Proxy for UI
+    G = 1.0
+    c_squared = 9.0 
+    rs = (2 * G * mass_index) / c_squared
+    
+    return dsf_depth, gr_depth, rs, mu_core
 
 def main():
-    print("Initializing Dynamic Spacetime Fluid (DSF) Engine...")
+    print("Initializing Parameter-Free Dynamic Spacetime Fluid (DSF) Engine v18.0...")
     
     context = zmq.Context()
-    
-    # --- 1. ZMQ Publisher (Sends Tensor Data to Node.js) ---
     pub_socket = context.socket(zmq.PUB)
     pub_socket.bind("tcp://*:5555")
     
-    # --- 2. ZMQ Puller (Receives Parameters from Node.js) ---
     pull_socket = context.socket(zmq.PULL)
     pull_socket.bind("tcp://*:5556")
     
     print("ZeroMQ Ports bound: PUB(5555), PULL(5556). Waiting for backend...")
 
-    # --- 3. Grid Initialization (Must match Three.js 100x100 resolution) ---
     grid_res = 100
     x = np.linspace(-50, 50, grid_res)
     y = np.linspace(-50, 50, grid_res)
     X, Y = np.meshgrid(x, y)
-    
-    # R is the distance from the center for each point on the grid
     R = np.sqrt(X**2 + Y**2)
     
-    # Default parameters (overwritten by frontend)
-    params = {
-        "mass_density": 50.0,
-        "base_viscosity": 1.0,
-        "beta": 0.5,
-        "alpha_higgs": 0.5
-    }
+    # The ONLY parameter is now the logarithmic mass index
+    params = {"mass_index": 50.0}
     
     running = True
-    print("Starting simulation loop. Press Ctrl+C to stop.")
+    print("Starting parameter-free simulation loop. Press Ctrl+C to stop.")
     
     try:
         while running:
-            # A. Non-blocking check for new UI parameters
             try:
                 msg = pull_socket.recv_string(flags=zmq.NOBLOCK)
                 new_params = json.loads(msg)
                 params.update(new_params)
-                print(f"Engine Updated Parameters: {params}")
+                print(f"Engine Updated Mass Index: {params['mass_index']}")
             except zmq.Again:
-                pass # No new message, continue simulation
+                pass 
                 
-            # B. Execute Physics Step
-            dsf_z, gr_z, rs = calculate_metrics(
-                R=R,
-                mass_density=params["mass_density"],
-                base_viscosity=params["base_viscosity"],
-                beta=params["beta"],
-                alpha_higgs=params["alpha_higgs"]
-            )
+            dsf_z, gr_z, rs, mu_out = calculate_metrics(R=R, mass_index=params["mass_index"])
             
-            # C. Serialize for Three.js
-            # Three.js PlaneGeometry reads data as flat 1D arrays
             payload = {
                 "dsf_z": dsf_z.flatten().tolist(),
                 "gr_z": gr_z.flatten().tolist(),
                 "rs": float(rs),
+                "mu_core": float(mu_out),
                 "timestamp": time.time()
             }
             
-            # Broadcast the pure JSON string
             pub_socket.send_string(json.dumps(payload))
-            
-            # Throttle the loop (10-15 FPS is sufficient for frontend visualization)
             time.sleep(0.05) 
 
     except KeyboardInterrupt:
